@@ -9,3 +9,6 @@ dist
 
 #editors
 .vscode
+
+#local storage
+server_state.json
