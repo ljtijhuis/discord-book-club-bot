@@ -1,3 +1,48 @@
+# Discord book club bot
+
+I used the Discord getting started bot as a starting point, see that documentation below.
+
+## Features
+
+The book club bot provides these features:
+* Search for books leveraging Goodreads
+* Keep track of a shortlist of books your club is interested in
+* Start a vote using the books from the shortlist to decide your next pick
+* Keep track of your book club events, listing dates and the book to be discussed
+
+The whole app is centered around Goodreads. Since they don't allow API access any longer, the bot scrapes the public search results and basic book information from the book pages.
+
+## Commands
+
+Search:
+* `/booksearch <query>` Returns the top 3 results from Goodreads search.
+
+Shortlist:
+* `/shortlist add <Goodreads URL>` Add a book to shortlist (hint: copy the Goodreads URL from the booksearch result).
+* `/shortlist list` See all shortlisted books (including URLs).
+* `/shortlist remove <number>` Removes a book from the shortlist. The number is the number reported through the `list` command.
+
+Vote:
+* `/startvote` This creates a new vote with all the books on the shortlist. Members can pick their favorites from the dropdown.
+
+Event:
+* `/bookevent add <date> <Goodreads URL>` Schedule the book provided through the Goodreads URL on the given date (e.g. `05-24-2023 21:00`).
+* `/bookevent list` List all (future and past) events scheduled.
+* `/bookevent remove <number>` Removes an event from the events list. The number is the number reported through the `list` command.
+
+## Notes
+
+* There are probably a couple of improvements to be made:
+  * A vote never ends, but the select menu can only be found in the original message where it was started. Members will have to scroll there if they are late to the party.
+  * The shortlist is not updated based on the vote or scheduled events. You will probably want to remove a book from the shortlist after it gets planned.
+  * We require the Goodreads URL to be passed as a param in a couple of places. Whenever we get the URL, we retrieve information on the book through Goodreads. Hopefully there is never any discrepancies :)
+  * I am sure I haven't found all bugs yet, but let's see what we run into!
+  * Oh yeah, state is not server specific right now and file based. I.e. it won't scale well, but I don't expect this to be shared to any other servers (or even know how people would be able to find it).
+  * Things could be nicer looking or better worded! There are definitely options with the "Message Components" Discord offers (e.g. the select menu for the vote). Suggestions are welcome!
+
+
+---
+
 # Getting Started app for Discord
 
 This project contains a basic rock-paper-scissors-style Discord app written in JavaScript, built for the [getting started guide](https://discord.com/developers/docs/getting-started).
