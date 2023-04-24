@@ -2,7 +2,7 @@ import config from './config.js';
 import { InstallGlobalCommands } from './utils.js';
 
 // booksearch <query>
-const BOOK_SEARCH = {
+export const BOOK_SEARCH = {
     name: 'booksearch',
     description: 'Search Goodreads for a book',
     options: [
@@ -18,7 +18,7 @@ const BOOK_SEARCH = {
 // shortlist list
 // shortlist add <url>
 // shortlist remove <entry number>
-const BOOK_SHORTLIST = {
+export const BOOK_SHORTLIST = {
     name: 'shortlist',
     description: 'Manage shortlist of books to be considered',
     options: [
@@ -58,7 +58,7 @@ const BOOK_SHORTLIST = {
 };
 
 // startvote
-const VOTE = {
+export const VOTE = {
     name: 'startvote',
     description:
         'Start a vote for the next book with the books on your shortlist',
@@ -68,7 +68,7 @@ const VOTE = {
 // bookevent list
 // bookevent add <date> <url>
 // bookevent remove <entry number>
-const BOOK_EVENT = {
+export const BOOK_EVENT = {
     name: 'bookevent',
     description: 'Manage book discussion events',
     options: [

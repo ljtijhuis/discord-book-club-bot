@@ -6,9 +6,13 @@ dist
 
 #secrets
 .env
+.env.hosting
 
 #editors
 .vscode
 
 #local storage
 server_state.json
+
+# MacOS
+**/.DS_Store

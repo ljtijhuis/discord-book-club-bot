@@ -15,14 +15,17 @@
         "format:fix": "prettier --config .prettierrc --ignore-path .gitignore --write \"**/*.+(js|ts|json)\"",
         "prestart": "npm run build",
         "start": "node dist/app.js",
+        "start:gateway": "node dist/app_gateway.js",
         "register": "node dist/lib/register_commands.js",
-        "dev": "concurrently \"npx tsc --watch\" \"nodemon -q dist/app.js\""
+        "dev": "concurrently \"npx tsc --watch\" \"nodemon -q dist/app.js\"",
+        "dev:gateway": "concurrently \"npx tsc --watch\" \"nodemon -q dist/app_gateway.js\""
     },
     "author": "Shay DeWael",
     "license": "MIT",
     "dependencies": {
         "cheerio": "^1.0.0-rc.12",
         "discord-interactions": "^3.2.0",
+        "discord.js": "^14.9.0",
         "dotenv": "^16.0.3",
         "express": "^4.18.2",
         "goodreads-parser": "^1.2.6",

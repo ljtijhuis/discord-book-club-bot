@@ -40,6 +40,11 @@ Event:
   * Oh yeah, state is not server specific right now and file based. I.e. it won't scale well, but I don't expect this to be shared to any other servers (or even know how people would be able to find it).
   * Things could be nicer looking or better worded! There are definitely options with the "Message Components" Discord offers (e.g. the select menu for the vote). Suggestions are welcome!
 
+## Gateway rewrite
+
+Since the cheap hosts assume you use Discord's Gateway implementation (or at least the one I found), I rewrote the main script to leverage the Gateway API over the webhook one. Guide I followed here: https://discordjs.guide/creating-your-bot/
+
+I tried to keep the implementation separate, adding a `start:gateway` command and use `app_gateway.ts` as entry point.
 
 ---
 

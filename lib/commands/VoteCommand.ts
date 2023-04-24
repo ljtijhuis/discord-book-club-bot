@@ -1,10 +1,17 @@
 import { Request, Response } from 'express';
 import { BookClubState } from '../types/BookClubState.js';
-import { ICommand } from './CommandFactory.js';
+import { ICommand, IGatewayCommand } from './CommandFactory.js';
 import { InteractionResponseType } from 'discord-interactions';
 import { Book } from '../types/Book.js';
+import { Interaction } from 'discord.js';
 
-export default class VoteCommand implements ICommand {
+export default class VoteCommand implements ICommand, IGatewayCommand {
+    executeGatewayCommand(
+        _interaction: Interaction,
+        _state: BookClubState,
+    ): Promise<void> {
+        throw new Error('Method not implemented.');
+    }
     async execute(
         req: Request,
         res: Response,

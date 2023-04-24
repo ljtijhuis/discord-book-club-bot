@@ -4,9 +4,16 @@ import { Request, Response } from 'express';
 import { DiscordRequest } from '../utils.js';
 import { getBookData } from '../goodreads/goodreads_search.js';
 import { BookClubState } from '../types/BookClubState.js';
-import { ICommand } from './CommandFactory.js';
+import { ICommand, IGatewayCommand } from './CommandFactory.js';
+import { Interaction } from 'discord.js';
 
-export default class ShortlistCommand implements ICommand {
+export default class ShortlistCommand implements ICommand, IGatewayCommand {
+    executeGatewayCommand(
+        _interaction: Interaction,
+        _state: BookClubState,
+    ): Promise<void> {
+        throw new Error('Method not implemented.');
+    }
     async execute(
         req: Request,
         res: Response,

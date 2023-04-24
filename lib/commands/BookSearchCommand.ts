@@ -2,9 +2,16 @@ import { InteractionResponseType } from 'discord-interactions';
 import { Request, Response } from 'express';
 import { searchBooks } from '../goodreads/goodreads_search.js';
 import { BookClubState } from '../types/BookClubState.js';
-import { ICommand } from './CommandFactory.js';
+import { ICommand, IGatewayCommand } from './CommandFactory.js';
+import { Interaction } from 'discord.js';
 
-export default class BookSearchCommand implements ICommand {
+export default class BookSearchCommand implements ICommand, IGatewayCommand {
+    executeGatewayCommand(
+        _interaction: Interaction,
+        _state: BookClubState,
+    ): Promise<void> {
+        throw new Error('Method not implemented.');
+    }
     async execute(
         req: Request,
         res: Response,

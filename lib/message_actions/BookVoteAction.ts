@@ -1,9 +1,16 @@
 import { Request, Response } from 'express';
 import { BookClubState } from '../types/BookClubState.js';
-import { IAction } from './MessageActionFactory.js';
+import { IAction, IGatewayAction } from './MessageActionFactory.js';
 import { InteractionResponseType } from 'discord-interactions';
+import { Interaction } from 'discord.js';
 
-export default class BookVoteAction implements IAction {
+export default class BookVoteAction implements IAction, IGatewayAction {
+    executeGatewayAction(
+        _interaction: Interaction,
+        _state: BookClubState,
+    ): Promise<void> {
+        throw new Error('Method not implemented.');
+    }
     async execute(
         req: Request,
         res: Response,
