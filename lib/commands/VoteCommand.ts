@@ -6,11 +6,35 @@ import { Book } from '../types/Book.js';
 import { Interaction } from 'discord.js';
 
 export default class VoteCommand implements ICommand, IGatewayCommand {
-    executeGatewayCommand(
-        _interaction: Interaction,
-        _state: BookClubState,
+    async executeGatewayCommand(
+        interaction: Interaction,
+        state: BookClubState,
     ): Promise<void> {
-        throw new Error('Method not implemented.');
+        if (!interaction.isChatInputCommand()) {
+            return;
+        }
+        try {
+            await interaction.deferReply();
+            if (state.shortlist.books.length < 2) {
+                await interaction.editReply('Before starting a poll, make sure you have at least two books on your shortlist! Check out the commands under `/shortlist` to do so.');
+                return;
+            }
+
+            // Copy over shortlist to vote state
+            this.updateVoteState(state);
+            const data = this.composeVoteMessage(state);
+
+            console.log('Sending data');
+            console.dir(data, { depth: null });
+
+            await interaction.editReply(data);
+        } catch (error) {
+            console.error('error', error);
+            await interaction.editReply(
+                'Something went wrong while starting the vote..',
+            );
+        }
+
     }
     async execute(
         req: Request,
@@ -29,38 +53,8 @@ export default class VoteCommand implements ICommand, IGatewayCommand {
             }
 
             // Copy over shortlist to vote state
-            state.vote = {
-                books: [...state.shortlist.books],
-                votes: [],
-            };
-
-            const data = {
-                content: 'Ok folks, cast your vote! The nominees are:\n',
-                components: [
-                    {
-                        type: 1,
-                        components: [
-                            {
-                                type: 3,
-                                custom_id: 'book_vote',
-                                options: state.shortlist.books.map(
-                                    (book: Book) => ({
-                                        label: book.title.substring(0, 99),
-                                        value: book.id.substring(0, 99),
-                                        description: `By ${book.author}`,
-                                    }),
-                                ),
-                                placeholder: 'Pick your votes',
-                                min_values: 1,
-                                max_values: Math.min(
-                                    state.vote.books.length,
-                                    25,
-                                ),
-                            },
-                        ],
-                    },
-                ],
-            };
+            this.updateVoteState(state);
+            const data = this.composeVoteMessage(state);
 
             console.log('Sending data');
             console.dir(data, { depth: null });
@@ -79,5 +73,42 @@ export default class VoteCommand implements ICommand, IGatewayCommand {
                 },
             });
         }
+    }
+
+    private composeVoteMessage(state: BookClubState) {
+        return {
+            content: 'Ok folks, cast your vote! The nominees are:\n',
+            components: [
+                {
+                    type: 1,
+                    components: [
+                        {
+                            type: 3,
+                            custom_id: 'book_vote',
+                            options: state.shortlist.books.map(
+                                (book: Book) => ({
+                                    label: book.title.substring(0, 99),
+                                    value: book.id.substring(0, 99),
+                                    description: `By ${book.author}`,
+                                })
+                            ),
+                            placeholder: 'Pick your votes',
+                            min_values: 1,
+                            max_values: Math.min(
+                                state.vote.books.length,
+                                25
+                            ),
+                        },
+                    ],
+                },
+            ],
+        };
+    }
+
+    private updateVoteState(state: BookClubState) {
+        state.vote = {
+            books: [...state.shortlist.books],
+            votes: [],
+        };
     }
 }

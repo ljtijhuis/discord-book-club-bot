@@ -5,11 +5,22 @@ import { InteractionResponseType } from 'discord-interactions';
 import { Interaction } from 'discord.js';
 
 export default class BookVoteAction implements IAction, IGatewayAction {
-    executeGatewayAction(
-        _interaction: Interaction,
-        _state: BookClubState,
+    async executeGatewayAction(
+        interaction: Interaction,
+        state: BookClubState,
     ): Promise<void> {
-        throw new Error('Method not implemented.');
+        if (!interaction.isStringSelectMenu()) {
+            return;
+        }
+        const user = interaction.member?.user.id;
+        const name = interaction.member?.user.username;
+        const values = interaction.values;
+
+        this.storeVotes(state, user, values);
+        const votes = this.listVotes(state);
+
+        await interaction.reply(`${name}, your vote was registered! Current votes are:\n` +
+            votes.join('\n'));
     }
     async execute(
         req: Request,
@@ -23,9 +34,32 @@ export default class BookVoteAction implements IAction, IGatewayAction {
         const user = member.user.id;
         const name = member.nick ?? member.user.username;
 
+        this.storeVotes(state, user, values);
+        const votes = this.listVotes(state);
+
+        return res.send({
+            type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+            data: {
+                content:
+                    `${name}, your vote was registered! Current votes are:\n` +
+                    votes.join('\n'),
+            },
+        });
+    }
+
+    private listVotes(state: BookClubState) {
+        return state.vote.books.map((book) => {
+            const voteCount = state.vote.votes.filter(
+                (vote) => vote.book.id === book.id
+            ).length;
+            return `${book.title} by ${book.author}: ${voteCount} ${voteCount === 1 ? 'vote' : 'votes'}`;
+        });
+    }
+
+    private storeVotes(state: BookClubState, user: any, values: any) {
         // clear user's current votes
         state.vote.votes = state.vote.votes.filter(
-            (vote) => vote.user !== user,
+            (vote) => vote.user !== user
         );
 
         // add new votes
@@ -37,24 +71,6 @@ export default class BookVoteAction implements IAction, IGatewayAction {
                     user,
                 });
             }
-        });
-
-        const votes = state.vote.books.map((book) => {
-            const voteCount = state.vote.votes.filter(
-                (vote) => vote.book.id === book.id,
-            ).length;
-            return `${book.title} by ${book.author}: ${voteCount} ${
-                voteCount === 1 ? 'vote' : 'votes'
-            }`;
-        });
-
-        return res.send({
-            type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
-            data: {
-                content:
-                    `${name}, your vote was registered! Current votes are:\n` +
-                    votes.join('\n'),
-            },
         });
     }
 }

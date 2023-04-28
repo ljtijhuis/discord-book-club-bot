@@ -72,7 +72,7 @@ export default class ShortlistCommand implements ICommand, IGatewayCommand {
                     );
                 }
             } else {
-                throw new Error('Missing subcommand implementation');
+                throw new Error(`Missing subcommand implementation: ${subCommand}`);
             }
         } catch (error) {
             console.error('error', error);
